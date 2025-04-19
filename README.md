@@ -1,5 +1,7 @@
 # Gambling Core
 
+## This is just a experiment with AI...
+
 An experience with AI tools to create a website. A collection of browser-based casino games built with HTML, CSS, and JavaScript. Currently featuring a slot machine game with more games coming soon!
 
 ## 🎮 Games Available
