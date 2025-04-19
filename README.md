@@ -1,6 +1,6 @@
-# Gaming Hub
+# Gambling Core
 
-A collection of browser-based casino games built with HTML, CSS, and JavaScript. Currently featuring a slot machine game with more games coming soon!
+An experience with AI tools to create a website. A collection of browser-based casino games built with HTML, CSS, and JavaScript. Currently featuring a slot machine game with more games coming soon!
 
 ## 🎮 Games Available
 
@@ -15,7 +15,7 @@ A collection of browser-based casino games built with HTML, CSS, and JavaScript.
 
 ## 🚀 Play Now
 
-Visit the live website: [Gaming Hub](https://Apple2424.github.io/GamblingCoreWebsite/)
+Visit the live website: [Gambling Core](https://Apple2424.github.io/GamblingCoreWebsite/)
 
 ## 🛠️ Local Development
 
@@ -33,8 +33,12 @@ cd GamblingCoreWebsite
 
 ## 📝 License
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is proprietary software. All rights reserved. This software and associated documentation files (the "Software") are the exclusive property of Gambling Core. The Software is protected by copyright laws and international copyright treaties, as well as other intellectual property laws and treaties.
+
+No part of this Software may be reproduced, distributed, or transmitted in any form or by any means, including photocopying, recording, or other electronic or mechanical methods, without the prior written permission of Gambling Core.
+
+Commercial use of this Software is strictly prohibited without a valid license agreement from Gambling Core.
 
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/Apple2424/GamblingCoreWebsite/issues). 
+This is a private project and does not accept contributions from external parties. 

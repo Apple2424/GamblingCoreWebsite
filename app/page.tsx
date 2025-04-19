@@ -7,7 +7,7 @@ export default function Home() {
       <div className="container mx-auto px-4 py-16">
         <header className="text-center mb-16">
           <h1 className="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
-            Welcome to Gaming Hub
+            Welcome to Gambling Core
           </h1>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
             Choose your game and start the adventure! Our collection of exciting games awaits you.
@@ -50,7 +50,7 @@ export default function Home() {
         </div>
         
         <footer className="mt-16 text-center text-gray-400">
-          <p>© 2023 Gaming Hub. All rights reserved.</p>
+          <p>© 2025 Gambling Core. All rights reserved.</p>
         </footer>
       </div>
     </main>

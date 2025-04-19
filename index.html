@@ -188,14 +188,32 @@
     .block {
       display: block;
     }
+    
+    /* Add transition styles */
+    .page-transition {
+      opacity: 1;
+      transition: opacity 0.5s ease-out;
+    }
+    
+    .page-transition.fade-out {
+      opacity: 0;
+    }
+    
+    /* Prevent text selection during transition */
+    .no-select {
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
   </style>
 </head>
 <body>
-  <main class="min-h-screen">
+  <main class="min-h-screen page-transition no-select">
     <div class="container py-16">
       <header class="text-center mb-16">
         <h1 class="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
-          Welcome to Gaming Hub
+          Welcome to Gambling Core
         </h1>
         <p class="text-xl text-gray-300 max-w-2xl mx-auto">
           Choose your game and start the adventure! Our collection of exciting games awaits you.
@@ -238,9 +256,23 @@
       </div>
       
       <footer class="mt-16 text-center text-gray-400">
-        <p>© 2023 Gaming Hub. All rights reserved.</p>
+        <p>© 2025 Gambling Core. All rights reserved.</p>
       </footer>
     </div>
   </main>
+
+  <script>
+    // Add smooth transition when clicking the slot machine link
+    document.querySelector('a[href="slot-machine.html"]').addEventListener('click', function(e) {
+      e.preventDefault();
+      const main = document.querySelector('main');
+      main.classList.add('fade-out');
+      
+      // Navigate to slot machine page after fade out
+      setTimeout(() => {
+        window.location.href = 'slot-machine.html';
+      }, 500);
+    });
+  </script>
 </body>
 </html> 
