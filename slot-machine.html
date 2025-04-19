@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slot Machine - Gaming Hub</title>
+  <style>
+    :root {
+      --foreground-rgb: 255, 255, 255;
+      --background-start-rgb: 17, 24, 39;
+      --background-end-rgb: 11, 15, 25;
+    }
+    
+    body {
+      color: rgb(var(--foreground-rgb));
+      background: linear-gradient(
+        to bottom,
+        rgb(var(--background-start-rgb)),
+        rgb(var(--background-end-rgb))
+      );
+      min-height: 100vh;
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .py-16 {
+      padding-top: 4rem;
+      padding-bottom: 4rem;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      color: #60a5fa;
+      margin-bottom: 2rem;
+      transition: color 0.3s;
+    }
+
+    .back-link:hover {
+      color: #93c5fd;
+    }
+
+    .game-container {
+      background-color: #1f2937;
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      border: 1px solid #374151;
+      margin-bottom: 2rem;
+    }
+
+    .title {
+      font-size: 2.25rem;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(to right, #60a5fa, #a855f7);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #d1d5db;
+      margin-bottom: 2rem;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+      color: #d1d5db;
+      background: #374151;
+      padding: 1rem;
+      border-radius: 0.5rem;
+    }
+
+    .slot-machine {
+      position: relative;
+      background: #374151;
+      border-radius: 0.5rem;
+      padding: 2rem;
+      margin: 1rem 0;
+      border: 1px solid #4b5563;
+    }
+
+    .win-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .reels {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .reel {
+      background: #1f2937;
+      border: 2px solid #4b5563;
+      border-radius: 0.5rem;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .symbol {
+      font-size: 3rem;
+      transition: transform 0.2s;
+    }
+
+    .symbol.spinning {
+      animation: spin 0.2s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: translateY(-100%); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(100%); opacity: 0; }
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .spin-button {
+      background: linear-gradient(to bottom, #60a5fa, #3b82f6);
+      color: white;
+      border: none;
+      padding: 1rem 3rem;
+      font-size: 1.5rem;
+      border-radius: 2rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: 2px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .spin-button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(to bottom, #3b82f6, #2563eb);
+    }
+
+    .spin-button:disabled {
+      background: #4b5563;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .bet-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .bet-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .bet-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .bet-btn {
+      background: #374151;
+      color: white;
+      border: none;
+      padding: 0.5rem;
+      min-width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .bet-btn:hover {
+      background: #4b5563;
+      transform: scale(1.05);
+    }
+
+    .bet-btn:disabled {
+      background: #1f2937;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .bet-max, .bet-min {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+
+    .bet-max {
+      background: linear-gradient(to bottom, #ef4444, #dc2626);
+    }
+
+    .bet-min {
+      background: linear-gradient(to bottom, #6b7280, #4b5563);
+    }
+
+    .bet-amount {
+      font-size: 1.25rem;
+      min-width: 3rem;
+      text-align: center;
+      background: #1f2937;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      margin: 0 0.5rem;
+      color: #d1d5db;
+    }
+
+    .win-message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(17, 24, 39, 0.9);
+      color: #fcd34d;
+      padding: 1rem 2rem;
+      border-radius: 1rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+      animation: pop 0.3s ease-out;
+      z-index: 10;
+      border: 2px solid #fcd34d;
+    }
+
+    @keyframes pop {
+      0% { transform: translate(-50%, -50%) scale(0); }
+      50% { transform: translate(-50%, -50%) scale(1.2); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .probability-box {
+      background: #1f2937;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-top: 2rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border: 1px solid #374151;
+    }
+
+    .probability-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #fcd34d;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .combinations-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .combination-card {
+      background: #374151;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: transform 0.2s;
+      border: 1px solid #4b5563;
+    }
+
+    .combination-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .combination-card.pair {
+      background: #1f2937;
+      border: 1px solid #374151;
+    }
+
+    .combo-symbols {
+      font-size: 2rem;
+      text-align: center;
+      background: #1f2937;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      border: 1px solid #4b5563;
+    }
+
+    .combo-details {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem;
+    }
+
+    .combo-name {
+      color: #d1d5db;
+      font-size: 1rem;
+    }
+
+    .combo-multiplier {
+      color: #34d399;
+      font-weight: bold;
+      font-size: 1.25rem;
+      padding: 0.25rem 0.5rem;
+      background: rgba(52, 211, 153, 0.1);
+      border-radius: 0.25rem;
+    }
+
+    .combination-card.pair .combo-multiplier {
+      background: rgba(252, 211, 77, 0.1);
+      color: #fcd34d;
+    }
+
+    @media (max-width: 768px) {
+      .combinations-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      }
+
+      .combo-symbols {
+        font-size: 1.5rem;
+      }
+
+      .combo-name {
+        font-size: 0.9rem;
+      }
+
+      .combo-multiplier {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="min-h-screen">
+    <div class="container py-16">
+      <a href="index.html" class="back-link">
+        ← Back to Home
+      </a>
+      
+      <h1 class="title">Slot Machine</h1>
+      <p class="subtitle">Try your luck and win big!</p>
+      
+      <div class="game-container">
+        <div class="stats">
+          <div>Credits: <span id="credits">100</span></div>
+          <div>Bet: <span id="bet">10</span></div>
+        </div>
+        
+        <div class="slot-machine">
+          <div class="win-line"></div>
+          <div class="reels" id="reels-container">
+            <div class="reel">
+              <div class="symbol">🎰</div>
+            </div>
+            <div class="reel">
+              <div class="symbol">🎰</div>
+            </div>
+            <div class="reel">
+              <div class="symbol">🎰</div>
+            </div>
+          </div>
+          
+          <div id="win-message" class="win-message" style="display: none;">
+            WIN! +<span id="win-amount">0</span> credits
+          </div>
+        </div>
+
+        <div class="controls">
+          <button id="spin-button" class="spin-button">SPIN</button>
+          <div class="bet-controls">
+            <div class="bet-buttons">
+              <div class="bet-row">
+                <button class="bet-btn" data-action="decrease" data-amount="10">-10</button>
+                <button class="bet-btn" data-action="decrease" data-amount="5">-5</button>
+                <button class="bet-btn" data-action="decrease" data-amount="1">-1</button>
+                <span class="bet-amount" id="bet-display">10</span>
+                <button class="bet-btn" data-action="increase" data-amount="1">+1</button>
+                <button class="bet-btn" data-action="increase" data-amount="5">+5</button>
+                <button class="bet-btn" data-action="increase" data-amount="10">+10</button>
+              </div>
+              <div class="bet-row">
+                <button class="bet-btn bet-max" data-action="max">MAX BET</button>
+                <button class="bet-btn bet-min" data-action="min">MIN BET</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="probability-box">
+        <div class="probability-title">Winning Chances</div>
+        <div class="combinations-grid">
+          <div class="combination-card">
+            <div class="combo-symbols">7️⃣ 7️⃣ 7️⃣</div>
+            <div class="combo-details">
+              <div class="combo-name">Triple Seven</div>
+              <div class="combo-multiplier">×20</div>
+            </div>
+          </div>
+          <div class="combination-card">
+            <div class="combo-symbols">💎 💎 💎</div>
+            <div class="combo-details">
+              <div class="combo-name">Triple Diamond</div>
+              <div class="combo-multiplier">×10</div>
+            </div>
+          </div>
+          <div class="combination-card">
+            <div class="combo-symbols">🍇 🍇 🍇</div>
+            <div class="combo-details">
+              <div class="combo-name">Triple Grape</div>
+              <div class="combo-multiplier">×5</div>
+            </div>
+          </div>
+          <div class="combination-card">
+            <div class="combo-symbols">🍋 🍋 🍋</div>
+            <div class="combo-details">
+              <div class="combo-name">Triple Lemon</div>
+              <div class="combo-multiplier">×4</div>
+            </div>
+          </div>
+          <div class="combination-card">
+            <div class="combo-symbols">🍊 🍊 🍊</div>
+            <div class="combo-details">
+              <div class="combo-name">Triple Orange</div>
+              <div class="combo-multiplier">×3</div>
+            </div>
+          </div>
+          <div class="combination-card">
+            <div class="combo-symbols">🍒 🍒 🍒</div>
+            <div class="combo-details">
+              <div class="combo-name">Triple Cherry</div>
+              <div class="combo-multiplier">×2</div>
+            </div>
+          </div>
+          <div class="combination-card pair">
+            <div class="combo-symbols">7️⃣ 7️⃣ ❓</div>
+            <div class="combo-details">
+              <div class="combo-name">Pair of Sevens</div>
+              <div class="combo-multiplier">×3</div>
+            </div>
+          </div>
+          <div class="combination-card pair">
+            <div class="combo-symbols">💎 💎 ❓</div>
+            <div class="combo-details">
+              <div class="combo-name">Pair of Diamonds</div>
+              <div class="combo-multiplier">×2</div>
+            </div>
+          </div>
+          <div class="combination-card pair">
+            <div class="combo-symbols">🍇 🍇 ❓</div>
+            <div class="combo-details">
+              <div class="combo-name">Pair of Grapes</div>
+              <div class="combo-multiplier">×1.5</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Audio elements -->
+  <audio id="spin-sound" preload="auto">
+    <source src="https://assets.mixkit.co/active_storage/sfx/2020/2020-preview.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="reel-stop-sound" preload="auto">
+    <source src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="win-sound" preload="auto">
+    <source src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="jackpot-sound" preload="auto">
+    <source src="https://assets.mixkit.co/active_storage/sfx/2021/2021-preview.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="coin-sound" preload="auto">
+    <source src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const symbols = ['🍒', '🍊', '🍋', '🍇', '💎', '7️⃣'];
+    const multipliers = {
+      '��🍒🍒': 2,
+      '🍊🍊🍊': 3,
+      '🍋🍋🍋': 4,
+      '🍇🍇🍇': 5,
+      '💎💎💎': 10,
+      '7️⃣7️⃣7️⃣': 20,
+      '7️⃣7️⃣': 3,
+      '💎💎': 2,
+      '🍇🍇': 1.5,
+    };
+
+    let credits = 100;
+    let bet = 10;
+    let isSpinning = false;
+
+    const reels = document.querySelectorAll('.reel');
+    const spinButton = document.querySelector('.spin-button');
+    const betAmount = document.querySelector('.bet-amount');
+    const creditsDisplay = document.querySelector('#credits');
+    const slotMachine = document.querySelector('.slot-machine');
+    
+    // Sound elements
+    const spinSound = document.getElementById('spin-sound');
+    const reelStopSound = document.getElementById('reel-stop-sound');
+    const winSound = document.getElementById('win-sound');
+    const jackpotSound = document.getElementById('jackpot-sound');
+    const coinSound = document.getElementById('coin-sound');
+
+    let spinSoundInterval;
+    let isSpinSoundPlaying = false;
+    let spinningIntervals = [];
+
+    function playSound(sound, options = {}) {
+      if (!sound) return;
+      
+      const { loop = false, volume = 1 } = options;
+      
+      try {
+        sound.currentTime = 0;
+        sound.loop = loop;
+        // Adjust volume based on sound type
+        if (sound === spinSound) {
+          sound.volume = 0.3; // Lower volume for continuous spin sound
+        } else if (sound === reelStopSound) {
+          sound.volume = 0.4; // Moderate volume for reel stops
+        } else {
+          sound.volume = volume;
+        }
+        sound.play();
+      } catch (error) {
+        console.log("Audio playback failed:", error);
+      }
+    }
+
+    function stopSound(sound) {
+      if (!sound) return;
+      
+      try {
+        sound.pause();
+        sound.currentTime = 0;
+      } catch (error) {
+        console.log("Audio stop failed:", error);
+      }
+    }
+
+    function updateDisplay() {
+      creditsDisplay.textContent = credits;
+      betAmount.textContent = bet;
+      spinButton.disabled = isSpinning || credits < bet;
+      
+      // Update all bet buttons
+      document.querySelectorAll('.bet-btn').forEach(btn => {
+        const action = btn.dataset.action;
+        const amount = parseInt(btn.dataset.amount) || 0;
+        
+        if (action === 'increase') {
+          btn.disabled = isSpinning || bet + amount > credits;
+        } else if (action === 'decrease') {
+          btn.disabled = isSpinning || bet - amount < 1;
+        } else if (action === 'max') {
+          btn.disabled = isSpinning || bet === credits;
+        } else if (action === 'min') {
+          btn.disabled = isSpinning || bet === 1;
+        }
+      });
+    }
+
+    function showWinMessage(amount) {
+      const winMessageElement = document.getElementById('win-message');
+      const winAmountElement = document.getElementById('win-amount');
+      
+      winAmountElement.textContent = amount;
+      winMessageElement.style.display = 'block';
+
+      setTimeout(() => {
+        winMessageElement.style.display = 'none';
+      }, 2000);
+    }
+
+    function getRandomSymbol() {
+      return symbols[Math.floor(Math.random() * symbols.length)];
+    }
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function fadeOutSound(sound, duration = 500) {
+      return new Promise(resolve => {
+        const initialVolume = sound.volume;
+        const steps = 20;
+        const volumeStep = initialVolume / steps;
+        const intervalTime = duration / steps;
+        
+        const fadeInterval = setInterval(() => {
+          if (sound.volume > volumeStep) {
+            sound.volume = Math.max(0, sound.volume - volumeStep);
+          } else {
+            clearInterval(fadeInterval);
+            sound.pause();
+            sound.volume = initialVolume;
+            sound.currentTime = 0;
+            resolve();
+          }
+        }, intervalTime);
+      });
+    }
+
+    function checkWin(symbols) {
+      // Check for three of a kind first
+      if (symbols[0] === symbols[1] && symbols[1] === symbols[2]) {
+        return bet * multipliers[symbols.join('')];
+      }
+      
+      // Check for pairs (first two or last two)
+      if (symbols[0] === symbols[1]) {
+        const pair = symbols[0] + symbols[1];
+        if (multipliers[pair]) {
+          return Math.floor(bet * multipliers[pair]);
+        }
+      }
+      
+      return 0;
+    }
+
+    async function spin() {
+      if (isSpinning || credits < bet) return;
+
+      isSpinning = true;
+      credits -= bet;
+      updateDisplay();
+
+      // Start spin sound
+      playSound(spinSound, { loop: true, volume: 0.3 });
+
+      // Clear any existing intervals
+      spinningIntervals.forEach(interval => clearInterval(interval));
+      spinningIntervals = [];
+
+      // Start spinning animation with random symbols
+      reels.forEach((reel, index) => {
+        const symbol = reel.querySelector('.symbol');
+        symbol.classList.add('spinning');
+        
+        spinningIntervals[index] = setInterval(() => {
+          symbol.textContent = getRandomSymbol();
+        }, 100);
+      });
+
+      const spinDurations = [
+        1000 + Math.random() * 500,
+        1500 + Math.random() * 500,
+        2000 + Math.random() * 500
+      ];
+
+      const finalSymbols = [];
+      
+      // Stop reels one by one
+      for (let i = 0; i < reels.length; i++) {
+        await sleep(spinDurations[i]);
+        
+        clearInterval(spinningIntervals[i]);
+        
+        const symbol = reels[i].querySelector('.symbol');
+        symbol.classList.remove('spinning');
+        const randomSymbol = getRandomSymbol();
+        symbol.textContent = randomSymbol;
+        finalSymbols.push(randomSymbol);
+
+        // Play reel stop sound
+        playSound(reelStopSound, { volume: 0.4 });
+      }
+
+      // Fade out spin sound
+      await fadeOutSound(spinSound);
+
+      // Check for wins
+      const winAmount = checkWin(finalSymbols);
+      if (winAmount > 0) {
+        credits += winAmount;
+        
+        // Small delay before showing win
+        await sleep(300);
+        showWinMessage(winAmount);
+        
+        if (winAmount >= bet * 10) {
+          playSound(jackpotSound, { volume: 0.7 });
+        } else {
+          playSound(winSound, { volume: 0.6 });
+        }
+      }
+
+      isSpinning = false;
+      updateDisplay();
+    }
+
+    // Initialize reels with random symbols
+    reels.forEach(reel => {
+      reel.innerHTML = ''; // Clear existing content
+      const symbol = document.createElement('div');
+      symbol.className = 'symbol';
+      symbol.textContent = getRandomSymbol();
+      reel.appendChild(symbol);
+    });
+
+    // Event listeners
+    spinButton.addEventListener('click', () => {
+      if (!isSpinning && credits >= bet) {
+        spin();
+      }
+    });
+
+    document.querySelectorAll('.bet-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (isSpinning) return;
+        
+        const action = btn.dataset.action;
+        const amount = parseInt(btn.dataset.amount) || 0;
+        
+        if (action === 'increase') {
+          bet = Math.min(bet + amount, credits);
+          playSound(coinSound, { volume: 0.6 });
+        } else if (action === 'decrease') {
+          bet = Math.max(1, bet - amount);
+          playSound(coinSound, { volume: 0.6 });
+        } else if (action === 'max') {
+          bet = credits;
+          playSound(coinSound, { volume: 0.6 });
+        } else if (action === 'min') {
+          bet = 1;
+          playSound(coinSound, { volume: 0.6 });
+        }
+        
+        updateDisplay();
+      });
+    });
+
+    // Initial update
+    updateDisplay();
+  </script>
+</body>
+</html> 

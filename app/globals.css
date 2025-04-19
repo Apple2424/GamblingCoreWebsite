@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 17, 24, 39;
+  --background-end-rgb: 11, 15, 25;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+    to bottom,
+    rgb(var(--background-start-rgb)),
+    rgb(var(--background-end-rgb))
+  );
+  min-height: 100vh;
+}
+
+@layer components {
+  .game-card {
+    @apply bg-gray-800 rounded-lg p-6 shadow-lg border border-gray-700 transition-all duration-300;
+  }
+  
+  .game-card:hover {
+    @apply border-blue-500 transform hover:scale-105;
+  }
+  
+  .btn-primary {
+    @apply px-6 py-3 rounded-lg font-bold transition-colors duration-300;
+  }
+  
+  .btn-primary:not(:disabled) {
+    @apply bg-blue-600 hover:bg-blue-700;
+  }
+  
+  .btn-primary:disabled {
+    @apply bg-gray-600 cursor-not-allowed;
+  }
+} 
